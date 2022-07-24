@@ -1,0 +1,1 @@
+alter table tb_cliente rename column telefone to fone;
