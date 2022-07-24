@@ -1,9 +1,8 @@
 package com.algaworks.algalog.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -19,6 +18,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.algaworks.algalog.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algalog.domain.exception.NegocioException;
 
 @ControllerAdvice
@@ -40,7 +40,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Problem problem = new Problem();
 		problem.setStatus(status.value());
-		problem.setDateTime(LocalDateTime.now());
+		problem.setDateTime(OffsetDateTime.now());
 		problem.setDescription("Um ou mais campos estão invalidos. Faça o preenchimento correto e tente novamente");
 		problem.setFields(fields);
 
@@ -53,7 +53,19 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		Problem problem = new Problem();
 		problem.setStatus(status.value());
-		problem.setDateTime(LocalDateTime.now());
+		problem.setDateTime(OffsetDateTime.now());
+		problem.setDescription(ex.getMessage());
+
+		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
+	}
+
+	@ExceptionHandler(EntidadeNaoEncontradaException.class)
+	public ResponseEntity<Object> handleNegocio(EntidadeNaoEncontradaException ex, WebRequest request) {
+		HttpStatus status = HttpStatus.NOT_FOUND;
+
+		Problem problem = new Problem();
+		problem.setStatus(status.value());
+		problem.setDateTime(OffsetDateTime.now());
 		problem.setDescription(ex.getMessage());
 
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);

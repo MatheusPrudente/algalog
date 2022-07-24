@@ -1,7 +1,5 @@
 package com.algaworks.algalog.domain.service;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,12 +14,15 @@ public class CatalogoClienteService {
 	@Autowired
 	private ClienteRepository clienteRepository;
 
+	public Cliente buscar(Long clienteId) {
+		return clienteRepository.findById(clienteId).orElseThrow(() -> new NegocioException("cliente não encontrado"));
+	}
+
 	@Transactional
 	public Cliente salvarCliente(Cliente cliente) {
-		boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail())
-				.stream()
+		boolean emailEmUso = clienteRepository.findByEmail(cliente.getEmail()).stream()
 				.anyMatch(clienteExistente -> !clienteExistente.equals(cliente));
-				
+
 		if (emailEmUso) {
 			throw new NegocioException("Já existe o email em uso");
 		}
