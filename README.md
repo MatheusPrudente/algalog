@@ -11,7 +11,7 @@ Este projeto foi desenvolvido com as seguintes tecnologias :
 
 ## Projeto
 
-  Projeto foi desenvolvido durante o curso *__Mergulho Spring Rest__* oferecida pela AlgaWorks. O projeto consiste em uma Api Rest de Gerencimanto de Entregas
+  Projeto foi desenvolvido durante o curso *__Mergulho Spring Rest__* oferecida pela [AlgaWorks](https://www.algaworks.com). O projeto consiste em uma Api Rest de Gerencimanto de Entregas
 
 ## Diagrama de Classes
 
