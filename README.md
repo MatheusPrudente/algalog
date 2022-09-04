@@ -2,6 +2,14 @@
   Algalog
 </h2>
 
+<p align="center">
+    <img src="https://img.shields.io/github/languages/count/MatheusPrudente/algalog"/>
+    <img src="https://img.shields.io/github/repo-size/MatheusPrudente/algalog"/>
+    <img src="https://img.shields.io/github/last-commit/MatheusPrudente/algalog"/>
+    <img src="https://img.shields.io/github/issues/MatheusPrudente/algalog"/>
+</p>
+
+
 ## Tecnologias 
 
 Este projeto foi desenvolvido com as seguintes tecnologias : 
