@@ -8,9 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "TB_CLIENTE")
@@ -21,19 +18,12 @@ public class Cliente {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@NotBlank
-	@Size(max = 60)
 	@Column(name = "NOME")
 	private String nome;
 
-	@NotBlank
-	@Email
-	@Size(max = 255)
 	@Column(name = "EMAIL")
 	private String email;
 
-	@NotBlank
-	@Size(max = 20)
 	@Column(name = "FONE")
 	private String telefone;
 

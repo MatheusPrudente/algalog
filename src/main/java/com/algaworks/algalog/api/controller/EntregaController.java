@@ -24,6 +24,13 @@ import com.algaworks.algalog.domain.repository.EntregaRepository;
 import com.algaworks.algalog.domain.service.FinalizacaoEntregaService;
 import com.algaworks.algalog.domain.service.SolicitacaoEntregaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("/entregas")
 public class EntregaController {
@@ -40,7 +47,13 @@ public class EntregaController {
 	@Autowired
 	private FinalizacaoEntregaService finalizacaoEntregaService;
 	
-	
+	@Operation(summary = "Solicitar uma Entrega")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntregaModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public EntregaModel solicitar(@Valid @RequestBody EntregaInput entregaInput) {
@@ -50,11 +63,25 @@ public class EntregaController {
 		return entregaAssembler.toModelEntrega(entregaSolicitada);
 	}
 
+	@Operation(summary = "Obter Listagem das Entregas Cadastradas")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = EntregaModel.class)))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@GetMapping
 	public List<EntregaModel> listar() {
 		return entregaAssembler.toCollectModel(entregaRepository.findAll());
 	}
 
+	@Operation(summary = "Buscar Uma Entrega Pelo Id")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = EntregaModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@GetMapping("/{entregaId}")
 	public ResponseEntity<EntregaModel> buscar(@PathVariable Long entregaId) {
 		return entregaRepository.findById(entregaId).map(entrega -> {
@@ -62,6 +89,13 @@ public class EntregaController {
 		}).orElse(ResponseEntity.notFound().build());
 	}
 	
+	@Operation(summary = "Finalizar uma Entrega")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = void.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@PutMapping("/{entregaId}/finalizacao")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void finalizar(@PathVariable long entregaId) {

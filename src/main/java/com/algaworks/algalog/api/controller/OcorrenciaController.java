@@ -22,6 +22,13 @@ import com.algaworks.algalog.domain.model.Ocorrencia;
 import com.algaworks.algalog.domain.service.BuscaEntregaService;
 import com.algaworks.algalog.domain.service.RegistroOcorrenciaService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+
 @RestController
 @RequestMapping("entregas/{entregaId}/ocorrencias")
 public class OcorrenciaController {
@@ -35,6 +42,13 @@ public class OcorrenciaController {
 	@Autowired
 	private BuscaEntregaService buscaEntregaService;
 
+	@Operation(summary = "Registrar uma Ocorrencia")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = OcorrenciaModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	private OcorrenciaModel registrar(@PathVariable Long entregaId,
@@ -45,6 +59,13 @@ public class OcorrenciaController {
 		return ocorrenciaAssembler.toModel(ocorrenciaRegistrada);
 	}
 
+	@Operation(summary = "Obter Listagem das Ocorrencia Cadastradas Pelo Id da Entrega")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = OcorrenciaModel.class)))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@GetMapping
 	public List<OcorrenciaModel> listar(@PathVariable Long entregaId) {
 		Entrega entrega = buscaEntregaService.buscar(entregaId);

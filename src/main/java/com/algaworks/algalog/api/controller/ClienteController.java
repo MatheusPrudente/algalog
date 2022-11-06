@@ -17,9 +17,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.algaworks.algalog.api.assembler.ClienteAssembler;
+import com.algaworks.algalog.api.model.ClienteModel;
+import com.algaworks.algalog.api.model.input.ClienteInput;
 import com.algaworks.algalog.domain.model.Cliente;
 import com.algaworks.algalog.domain.repository.ClienteRepository;
 import com.algaworks.algalog.domain.service.CatalogoClienteService;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 @RestController
 @RequestMapping("/clientes")
@@ -27,37 +37,78 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+	
 	@Autowired
 	private CatalogoClienteService catalogoClienteService;
-
+	
+	@Autowired
+	private ClienteAssembler clienteAssembler;
+	
+	@Operation(summary = "Obter Listagem dos Clientes Cadastrados")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", array = @ArraySchema(schema = @Schema(implementation = ClienteModel.class)))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@GetMapping()
-	public List<Cliente> listar() {
-		return clienteRepository.findAll();
+	public List<ClienteModel> listar() {
+		return clienteAssembler.toCollectionModel(clienteRepository.findAll());
 	}
 
+	@Operation(summary = "Buscar Cliente Cadastrado Pelo Id")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@GetMapping("/{clienteId}")
-	public ResponseEntity<Cliente> listarPorID(@PathVariable Long clienteId) {
-		return clienteRepository.findById(clienteId).map(cliente -> ResponseEntity.ok(cliente))
+	public ResponseEntity<ClienteModel> listarPorID(@PathVariable Long clienteId) {
+		return clienteRepository.findById(clienteId).map(cliente -> ResponseEntity.ok(clienteAssembler.toModel(cliente)))
 				.orElse(ResponseEntity.notFound().build());
 	}
 
+	@Operation(summary = "Adicionar um Cliente")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public Cliente adicionar(@Valid @RequestBody Cliente cliente) {
-		return catalogoClienteService.salvarCliente(cliente);
+	public ClienteModel adicionar(@Valid @RequestBody ClienteInput clienteInput) {
+		return clienteAssembler.toModel(catalogoClienteService.salvarCliente(clienteAssembler.toEntity(clienteInput)));
 	}
 
+	@Operation(summary = "Atualizar um Cliente")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@PutMapping("/{clienteId}")
-	public ResponseEntity<Cliente> atualizar(@Valid @PathVariable Long clienteId, @RequestBody Cliente cliente) {
+	public ResponseEntity<ClienteModel> atualizar(@Valid @PathVariable Long clienteId, @RequestBody ClienteInput clienteInput) {
 		if (!clienteRepository.existsById(clienteId)) {
 			return ResponseEntity.notFound().build();
 		}
+		
+		Cliente cliente = clienteAssembler.toEntity(clienteInput);
 		cliente.setId(clienteId);
 		catalogoClienteService.salvarCliente(cliente);
 
-		return ResponseEntity.ok(cliente);
+		return ResponseEntity.ok(clienteAssembler.toModel(cliente));
 	}
-
+	
+	@Operation(summary = "Deletar um Cliente")
+	@ApiResponses(value = { 
+			  @ApiResponse(responseCode = "200", description = "Sucesso na requisição", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ClienteModel.class))}),
+			  @ApiResponse(responseCode = "400", description = "Parametro inválido", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "403", description = "Não Autorizado", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "500", description = "Erro Interno do Servidor", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),
+			  @ApiResponse(responseCode = "504", description = "Timeout", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Exception.class))}),})
 	@DeleteMapping("/{clienteId}")
 	public ResponseEntity<Void> remover(@PathVariable Long clienteId) {
 		if (!clienteRepository.existsById(clienteId)) {
