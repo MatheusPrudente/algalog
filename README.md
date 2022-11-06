@@ -25,15 +25,15 @@ Este projeto foi desenvolvido com as seguintes tecnologias :
 
 ![diagrama-de-classes](https://user-images.githubusercontent.com/80559882/188333831-34eb6032-2623-48c9-835f-ea4b21b0c891.png)
 
-## :pushpin: Quickstart
+## :pushpin: Documentação
 
 ### H2 Console
-```bash
+```
   http://localhost:8080/algalog/h2-console
 ```
-## Documentação (SpringDoc)
-```bash
-  http://localhost:8080/algalog/h2-console
+## SpringDoc 
+```
+  http://localhost:8080/algalog/swagger-ui/index.html#/
 ```
 
 ## :crossed_swords: Desafios
