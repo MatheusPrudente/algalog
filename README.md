@@ -25,13 +25,71 @@ Este projeto foi desenvolvido com as seguintes tecnologias :
 
 ![diagrama-de-classes](https://user-images.githubusercontent.com/80559882/188333831-34eb6032-2623-48c9-835f-ea4b21b0c891.png)
 
-## :pushpin: Documentação
+## :bookmark_tabs: Documentação da API
 
-### H2 Console
+#### URL base
+
+```https
+  http://localhost:8080/algalog/
+```
+
+#### Obter Listagem dos Clientes Cadastrados
+
+```https
+  GET /clientes
+```
+
+#### Buscar Cliente Cadastrado Pelo Id
+
+```https
+  GET /clientes/{clienteId}
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `clienteId` | `Long` | **Obrigatório**. Id do Cliente |
+
+#### Adicionar um Cliente
+
+```https
+  POST /clientes/
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `clienteInput` | `ClienteInput` | **Obrigatório**. Informações do Cliente adicionado |
+
+#### Atualizar um Cliente
+
+```https
+  PUT /clientes/{clienteId}
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `clienteId` | `Long` | **Obrigatório**. Id do Cliente |
+| `clienteInput` | `ClienteInput` | **Obrigatório**. Informações do Cliente adicionado |
+
+#### Deletar um Cliente
+
+```https
+  DELETE /clientes/
+```
+
+| Parâmetro   | Tipo       | Descrição                           |
+| :---------- | :--------- | :---------------------------------- |
+| `clienteId` | `Long` | **Obrigatório**. Id do Cliente |
+
+## :pushpin: Rodando localmente
+
+#### Banco H2 
+
 ```
   http://localhost:8080/algalog/h2-console
 ```
-### SpringDoc 
+
+#### SpringDoc
+
 ```
   http://localhost:8080/algalog/swagger-ui/index.html#/
 ```
